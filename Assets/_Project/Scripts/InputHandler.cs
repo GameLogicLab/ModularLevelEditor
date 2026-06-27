@@ -74,6 +74,11 @@ public class InputHandler : MonoBehaviour
 
     void PlaceObject()
     {
+        if (UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
+            return;
+
+        if (commandInvoker == null) return;
+
         if (commandInvoker == null) return;
 
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
