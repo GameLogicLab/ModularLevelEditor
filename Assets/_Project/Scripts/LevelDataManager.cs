@@ -5,10 +5,17 @@ public class LevelDataManager : MonoBehaviour
 {
     public string levelName = "Level_01";
 
-    private string SavePath => Application.persistentDataPath + "/" + levelName + ".json";
+    private string savePath;
+
+    void Start()
+    {
+        savePath = Application.persistentDataPath;
+    }
 
     public void SaveLevel()
     {
+        string path = Path.Combine(savePath, levelName + ".json");
+
         LevelData levelData = new LevelData();
         levelData.levelName = levelName;
 
@@ -29,30 +36,30 @@ public class LevelDataManager : MonoBehaviour
         }
 
         string json = JsonUtility.ToJson(levelData, true);
-        File.WriteAllText(SavePath, json);
+        File.WriteAllText(path, json);
 
-        Debug.Log("Level saved to: " + SavePath);
+        Debug.Log("Level saved: " + path);
     }
 
     public void LoadLevel()
     {
-        if (!File.Exists(SavePath))
+        string path = Path.Combine(savePath, levelName + ".json");
+
+        if (!File.Exists(path))
         {
-            Debug.Log("No save file found!");
+            Debug.Log("No save file found at: " + path);
             return;
         }
 
-        string json = File.ReadAllText(SavePath);
+        string json = File.ReadAllText(path);
         LevelData levelData = JsonUtility.FromJson<LevelData>(json);
 
-        // Pehle sab active placeables delete karo
         GameObject[] existing = GameObject.FindGameObjectsWithTag("Placeable");
         foreach (GameObject obj in existing)
         {
-            Object.Destroy(obj);
+            Destroy(obj);
         }
 
-        // Ab JSON se objects spawn karo
         foreach (ObjectData data in levelData.objects)
         {
             Vector3 position = new Vector3(data.posX, data.posY, data.posZ);
@@ -61,15 +68,16 @@ public class LevelDataManager : MonoBehaviour
             GameObject prefab = Resources.Load<GameObject>(data.prefabID);
             if (prefab != null)
             {
-                GameObject obj = Object.Instantiate(prefab, position, rotation);
+                GameObject obj = Instantiate(prefab, position, rotation);
                 obj.tag = "Placeable";
-            }
-            else
-            {
-                Debug.Log("Prefab not found: " + data.prefabID);
             }
         }
 
         Debug.Log("Level loaded: " + levelData.levelName);
+    }
+
+    public void SetLevelName(string name)
+    {
+        levelName = name;
     }
 }
