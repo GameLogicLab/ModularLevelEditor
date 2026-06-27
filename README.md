@@ -60,7 +60,7 @@ Place, move, rotate, and scale modular 3D assets to build levels visually.
 
 ## Team
 - Programmer: Maharshi Trivedi
-- 3D Artist: (Designer name yahan likho)
+- 3D Artist: Mahir Kherani
 
 ## Project Structure
 ```
