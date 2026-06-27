@@ -5,7 +5,7 @@ public class LevelDataManager : MonoBehaviour
 {
     public string levelName = "Level_01";
 
-    private string savePath;
+    public string savePath;
 
     void Start()
     {
@@ -39,6 +39,18 @@ public class LevelDataManager : MonoBehaviour
         File.WriteAllText(path, json);
 
         Debug.Log("Level saved: " + path);
+    }
+
+    public string[] GetSavedLevels()
+    {
+        string[] files = Directory.GetFiles(savePath, "*.json");
+
+        for (int i = 0; i < files.Length; i++)
+        {
+            files[i] = Path.GetFileNameWithoutExtension(files[i]);
+        }
+
+        return files;
     }
 
     public void LoadLevel()
